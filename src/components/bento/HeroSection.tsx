@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MoveRight } from "lucide-react";
 import { FaGithub, FaInstagram, FaTiktok } from "react-icons/fa6";
 import BentoCard from "@/components/ui/BentoCard";
+import BouncyText from "@/components/ui/BouncyText";
 import { cn } from "@/lib/utils";
 
 const roles = [
@@ -62,15 +63,10 @@ export default function HeroSection() {
 
       {/* TENGAH ATAS: Learn more */}
       <BentoCard className="flex flex-col justify-between bg-purple-300 p-8">
-        <h2 className="font-mono text-6xl font-extrabold uppercase leading-[0.85] tracking-tighter text-neutral-800 lg:text-7xl">
-          Learn
-          <br />
-          more
-          <br />
-          about
-          <br />
-          me.
-        </h2>
+        <BouncyText
+  lines={["Learn", "more", "about", "me."]}
+  className="font-mono text-6xl font-extrabold uppercase leading-[0.85] tracking-tighter text-neutral-800 lg:text-7xl"
+/>
 
         <div className="mt-8 flex items-center gap-3">
           <Link
