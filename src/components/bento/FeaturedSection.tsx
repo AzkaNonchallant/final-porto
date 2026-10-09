@@ -4,8 +4,12 @@ import Image from "next/image";
 import { type ReactNode } from "react";
 import { MoveRight } from "lucide-react";
 import BentoCard from "@/components/ui/BentoCard";
+import type { CommitActivity, LanguageStat, Repo } from "@/lib/github";
 import WindowLayer from "@/components/ui/WindowLayer";
+import CertificateGallery from "@/components/ui/CertificateGallery";
 import { useWindows } from "@/hooks/useWindows";
+import { certificates } from "@/lib/certificates";
+import { cn } from "@/lib/utils";
 
 type Item = {
   label: string; // judul pojok kanan atas
@@ -18,9 +22,14 @@ type Item = {
   deco: ReactNode; // hiasan pojok kiri atas
   lineDeco: ReactNode; // hiasan di ujung garis bawah
   image?: string;
+  previews?: string[]; // tumpukan thumbnail di tengah card
   windowTitle: string;
   projects?: Project[];
+  useCertificates?: boolean; // window-nya nampilin galeri sertifikat
   skills?: { group: string; items: string[] }[];
+  useRepos?: boolean; // isi window-nya diambil dari GitHub
+  useLanguages?: boolean; // window-nya nampilin statistik bahasa
+  useActivity?: boolean; // window-nya nampilin language + aktivitas commit
 };
 
 type Project = {
@@ -48,6 +57,7 @@ const items: Item[] = [
     ),
     lineDeco: <span className="size-[3.5cqw] rounded-full bg-[#7c5cff]" />,
     windowTitle: "Azka — Software",
+    useRepos: true,
     projects: [
       {
         name: "Portfolio v2",
@@ -73,9 +83,9 @@ const items: Item[] = [
     ],
   },
   {
-    label: "Skills",
-    heading: "Skills",
-    sub: "Toolkit",
+    label: "Activity",
+    heading: "Activity",
+    sub: "GitHub",
     card: "bg-[#45a5ff] text-[#ffd84a]",
     circle: "bg-[#ffd84a]",
     button: "bg-[#ffd84a] shadow-[0.8cqw_0.8cqw_0_0_#000]",
@@ -93,7 +103,9 @@ const items: Item[] = [
       </svg>
     ),
     lineDeco: null,
-    windowTitle: "Azka — Skills",
+    windowTitle: "Azka — Activity",
+    useLanguages: true,
+    useActivity: true,
     skills: [
       {
         group: "Design",
@@ -142,29 +154,8 @@ const items: Item[] = [
       </svg>
     ),
     windowTitle: "Azka — Achievement",
-    projects: [
-      {
-        name: "Hackathon Winner",
-        year: "2025",
-        role: "Team Lead",
-        blurb: "1st place of 24 teams building an ed-tech attendance app.",
-        stack: ["Next.js", "Supabase"],
-      },
-      {
-        name: "Campus Ambassador",
-        year: "2024",
-        role: "Community",
-        blurb: "Ran workshops and design sprints for 200+ students.",
-        stack: ["Figma", "Discord"],
-      },
-      {
-        name: "OSS Contributor",
-        year: "2023",
-        role: "Open Source",
-        blurb: "Merged 14 PRs into a Tailwind CSS plugin repo.",
-        stack: ["TypeScript", "Git"],
-      },
-    ],
+    useCertificates: true,
+    previews: certificates.slice(0, 3).map((c) => c.src),
   },
 ];
 
@@ -196,6 +187,187 @@ function SkillList({
         </div>
       ))}
     </div>
+  );
+}
+
+function formatBytes(bytes: number) {
+  if (bytes <= 0) return "-";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function LanguageList({ languages }: { languages: LanguageStat[] }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500">
+        Language usage — dari {languages.reduce((sum, l) => sum + l.repos, 0)}{" "}
+        repo
+      </p>
+
+      {languages.slice(0, 10).map((lang) => (
+        <div key={lang.language} className="flex flex-col gap-1">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="truncate font-mono text-xs font-bold text-neutral-900">
+              {lang.language}
+            </span>
+            <span className="shrink-0 font-mono text-[10px] font-medium text-neutral-500">
+              {lang.percent}% · {formatBytes(lang.bytes)} · {lang.repos} repo
+            </span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-300">
+            <div
+              className="h-full rounded-full bg-[#4b4bff]"
+              style={{ width: `${Math.max(lang.percent, 1)}%` }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CommitActivityList({ activity }: { activity: CommitActivity }) {
+  const max = Math.max(...activity.days.map((d) => d.count), 1);
+  const now = new Date();
+  const today = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500">
+          Commit activity — 14 hari
+        </p>
+        <span className="rounded-md bg-neutral-900 px-2 py-0.5 font-mono text-[10px] font-bold text-white">
+          {activity.total} commits
+        </span>
+      </div>
+
+      {/* grafik batang per hari (hari ini = ijo) */}
+      <div className="flex h-20 items-end gap-1 rounded-lg border-2 border-neutral-900 bg-white p-2">
+        {activity.days.map((day) => {
+          const isToday = day.date === today;
+          const hasCommit = day.count > 0;
+
+          return (
+            <div
+              key={day.date}
+              title={`${day.date}: ${day.count} commit`}
+              className={cn(
+                "flex flex-1 flex-col items-center justify-end gap-1 rounded-sm",
+                isToday && "bg-[#22c55e]/15 ring-1 ring-[#22c55e]",
+              )}
+            >
+              <div
+                className={cn(
+                  "w-full rounded-sm",
+                  hasCommit
+                    ? isToday
+                      ? "bg-[#22c55e]"
+                      : "bg-[#4b4bff]"
+                    : "bg-neutral-300",
+                )}
+                style={{
+                  height: `${Math.max((day.count / max) * 100, hasCommit ? 8 : 4)}%`,
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      {activity.latest && (
+        <a
+          href={activity.latest.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col gap-0.5 rounded-lg border-2 border-neutral-900 bg-white p-3 transition hover:-translate-y-0.5 hover:bg-[#f4f2ff]"
+        >
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500">
+            Commit terbaru
+          </span>
+          <span className="truncate text-sm text-neutral-800">
+            {activity.latest.message}
+          </span>
+        </a>
+      )}
+
+      {activity.topRepos.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500">
+            Repo paling aktif
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {activity.topRepos.map((repo) => (
+              <span
+                key={repo.repo}
+                className="rounded-md border border-neutral-900/25 bg-white px-2 py-1 font-mono text-[10px] font-medium text-neutral-700"
+              >
+                {repo.repo} · {repo.count}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function formatDate(iso: string) {
+  if (!iso) return "";
+  return new Date(iso).getFullYear().toString();
+}
+
+function RepoList({ repos }: { repos: Repo[] }) {
+  return (
+    <ul className="flex flex-col gap-3">
+      {repos.map((repo) => (
+        <li key={repo.name}>
+          <a
+            href={repo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col gap-2 rounded-xl border-2 border-neutral-900 bg-white p-4 transition hover:-translate-y-0.5 hover:bg-[#f4f2ff]"
+          >
+            <div className="flex items-baseline justify-between gap-3">
+              <h4 className="truncate font-mono text-sm font-bold text-neutral-900">
+                {repo.name}
+              </h4>
+              <span className="shrink-0 font-mono text-[10px] font-bold text-neutral-500">
+                {formatDate(repo.updatedAt)}
+              </span>
+            </div>
+
+            {repo.description && (
+              <p className="text-sm text-neutral-600">{repo.description}</p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              {repo.language && (
+                <span className="rounded-md bg-[#4b4bff] px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-white">
+                  {repo.language}
+                </span>
+              )}
+              <span className="rounded-md border border-neutral-900/25 px-2 py-0.5 font-mono text-[10px] font-medium text-neutral-600">
+                ★ {repo.stars}
+              </span>
+              {repo.topics.slice(0, 4).map((topic) => (
+                <span
+                  key={topic}
+                  className="rounded-md border border-neutral-900/25 px-2 py-0.5 font-mono text-[10px] font-medium text-neutral-600"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -237,7 +409,15 @@ function ProjectList({ projects }: { projects: Project[] }) {
   );
 }
 
-export default function FeaturedSection() {
+export default function FeaturedSection({
+  repos = [],
+  languages = [],
+  activity,
+}: {
+  repos?: Repo[];
+  languages?: LanguageStat[];
+  activity?: CommitActivity;
+}) {
   const { windows, zOrder, open, focus, minimize, restore, close, closeAll } =
     useWindows<Item>();
 
@@ -285,6 +465,26 @@ export default function FeaturedSection() {
                 />
               </div>
             )}
+            {/* tumpukan thumbnail sertifikat */}
+            {item.previews?.map((src, k) => (
+              <div
+                key={src}
+                style={{
+                  rotate: `${[-11, 1, 12][k] ?? 0}deg`,
+                  marginLeft: `${[-7, 0, 7][k] ?? 0}cqw`,
+                  zIndex: k + 1,
+                }}
+                className="absolute left-1/2 top-[50%] aspect-[4/3] w-[64cqw] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[2cqw] border-[0.9cqw] border-neutral-900 shadow-[0.8cqw_0.8cqw_0_0_rgba(0,0,0,0.55)] transition-transform duration-500 group-hover:scale-[1.06]"
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 30vw, 90vw"
+                  className="object-cover"
+                />
+              </div>
+            ))}
 
             {/* bagian bawah */}
             <div className="absolute inset-x-[5cqw] bottom-[6cqw] flex items-end justify-between gap-[3cqw]">
@@ -320,11 +520,29 @@ export default function FeaturedSection() {
           id: w.id,
           title: w.data.windowTitle,
           minimized: w.minimized,
-          content: w.data.skills ? (
-            <SkillList skills={w.data.skills} />
-          ) : (
-            <ProjectList projects={w.data.projects ?? []} />
-          ),
+          content:
+            w.data.useRepos && repos.length > 0 ? (
+              <RepoList repos={repos} />
+            ) : w.data.useActivity && languages.length > 0 ? (
+              <div className="flex flex-col gap-5">
+                <LanguageList languages={languages} />
+                {activity && activity.total > 0 && (
+                  <CommitActivityList activity={activity} />
+                )}
+                <SkillList skills={w.data.skills ?? []} />
+              </div>
+            ) : w.data.useLanguages && languages.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <LanguageList languages={languages} />
+                <SkillList skills={w.data.skills ?? []} />
+              </div>
+            ) : w.data.skills ? (
+              <SkillList skills={w.data.skills} />
+            ) : w.data.useCertificates ? (
+              <CertificateGallery certs={certificates} />
+            ) : (
+              <ProjectList projects={w.data.projects ?? []} />
+            ),
         }))}
         zOrder={zOrder}
         onFocus={focus}

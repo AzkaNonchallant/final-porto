@@ -31,9 +31,9 @@ const roles: Role[] = [
       tagline:
         "Bikin produk digital dari nol: riset kebutuhan user, bikin prototipe, sampai ship dan iterasi dari feedback.",
       company: "Product Engineer",
-      period: "2023 — sekarang",
+      period: "2025 — sekarang",
       bullets: [
-        "Lead development untuk 3 produk internal, dari nol sampai dipakai 500+ user.",
+        "Lead development untuk 3 project tim sampai di terima oleh guru",
         "Bikin design system + component library yang dipake lintas tim frontend.",
         "Ngurus A/B test dan analytics buat nentuin fitur mana yang diprioritasin.",
         "Ngajarin tim soal git flow, code review, dan testing biar kerjaan lebih rapi.",
@@ -55,15 +55,14 @@ const roles: Role[] = [
       windowTitle: "Azka — Graphic Designer",
       tagline:
         "Bikin identitas visual yang kuat: dari logo, poster, sampai aset digital yang konsisten.",
-      company: "Graphic Designer",
-      period: "2022 — sekarang",
+      company: "PT Millenia Variety Food",
+      period: "3 Month of Experience",
       bullets: [
-        "Desain brand identity untuk 10+ brand lokal (logo, palet, tipografi).",
-        "Bikin poster & aset sosial media yang hasilnya dipakai untuk event kampus.",
+        "Bikin poster & aset sosial media yang hasilnya dipakai untuk lomba dan keperluan perusahaan",
         "Suka bikin ilustrasi vektor dan pixel art di luar jam kerja.",
         "Buat template yang bisa dipakai tim marketing tanpa perlu request tiap kali.",
       ],
-      skills: ["Illustrator", "Photoshop", "Figma", "Branding", "Pixel Art"],
+      skills: ["Illustrator", "Photoshop", "Figma", "ProCreate"],
     },
   },
   {
@@ -75,40 +74,38 @@ const roles: Role[] = [
       tagline:
         "Develop aplikasi mobile yang ringan dan enak dipake di Android maupun iOS.",
       company: "Mobile Developer",
-      period: "2023 — sekarang",
+      period: "2025 — sekarang",
       bullets: [
-        "Publish 4 aplikasi Android di Play Store, total 20k+ unduhan.",
-        "Bikin modul shared untuk auth, offline cache, dan analytics.",
+        "Publish 4 aplikasi Android/Ios Native dan PWA",
+        "Mengajar sesi pembelajaran mobile developer dengan flutter",
         "Optimasi cold start biar app kebuka di bawah 1.5 detik.",
-        "Automasi build & release pakai CI/CD biar rilis cepat.",
       ],
-      skills: ["Kotlin", "Swift", "React Native", "Firebase", "CI/CD"],
+      skills: ["Flutter","React Native", "Supabase", "CI/CD"],
     },
   },
   {
-    label: "DevOps Engineer",
+    label: "BackEnd Developer",
     color: "bg-fuchsia-400",
     pos: "rotate-6 ml-[13cqw]",
     experience: {
       windowTitle: "Azka — DevOps Engineer",
       tagline:
         "Olah deployment, monitoring, dan infra biar aplikasinya jalan terus tanpa drama.",
-      company: "DevOps Engineer",
-      period: "2024 — sekarang",
+      company: "KapsulIndo Nusantara",
+      period: "4 Month of Experience",
       bullets: [
-        "Migrasi 6 service dari VPS manual ke Kubernetes + Terraform.",
-        "Bikin pipeline CI/CD dengan build time turun 60%.",
-        "Setup monitoring & alerting (Prometheus, Grafana) plus on-call rotation.",
+        "Membuat ERP  Untuk Kapsulindo",
+        "Membuat CI/CD untuk personal project",
         "Backup & recovery plan yang sudah pernah dites beneran.",
       ],
-      skills: ["Docker", "Kubernetes", "Terraform", "AWS", "Prometheus"],
+      skills: ["PHP", "Express", "Docker", "AWS"],
     },
   },
 ];
 
 const socials = [
   { label: "Instagram", href: "https://instagram.com/", Icon: FaInstagram },
-  { label: "GitHub", href: "https://github.com/", Icon: FaGithub },
+  { label: "GitHub", href: "https://github.com/AzkaNonchallant", Icon: FaGithub },
   { label: "TikTok", href: "https://tiktok.com/", Icon: FaTiktok },
 ];
 
