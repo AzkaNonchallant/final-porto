@@ -223,7 +223,7 @@ export default function HeroSection() {
       <div className="col-span-2 grid grid-cols-2 gap-[1cqw] md:col-span-1 md:col-start-2 md:gap-4">
         <div className="relative aspect-square overflow-hidden rounded-[max(0.35rem,0.9cqw)] md:aspect-auto md:rounded-xl">
           <Image
-            src="/azkayow.png"
+            src="/azkayow.webp"
             alt="Ilustrasi karakter"
             fill
             sizes="(min-width: 768px) 25vw, 50vw"

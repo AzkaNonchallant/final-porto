@@ -112,25 +112,6 @@ body {
   }
 }
 
-@keyframes card-bend {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  30% {
-    transform: rotate(-1.8deg) scale(1.025, 0.98);
-  }
-  60% {
-    transform: rotate(1.3deg) scale(0.99, 1.014);
-  }
-  100% {
-    transform: rotate(0deg) scale(1);
-  }
-}
-
-.card-bend:hover > .card-bend-inner {
-  animation: card-bend 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
 @keyframes deco-float {
   0%,
   100% {
@@ -185,8 +166,7 @@ body {
   .role-idle,
   .deco-float,
   .deco-pulse,
-  .deco-wiggle,
-  .card-bend:hover > .card-bend-inner {
+  .deco-wiggle {
     animation: none !important;
   }
 }

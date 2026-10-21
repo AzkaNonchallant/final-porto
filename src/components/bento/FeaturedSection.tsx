@@ -436,12 +436,9 @@ export default function FeaturedSection({
       {items.map((item, i) => (
         <BentoCard
           key={item.label}
-          className={`@container card-bend group aspect-[383/663] w-[56vw] shrink-0 snap-center rounded-[max(0.75rem,1.2cqw)] border-[1cqw] border-neutral-900 p-0 shadow-[1.2cqw_1.2cqw_0_0_#000] transition-shadow hover:shadow-[1.6cqw_1.6cqw_0_0_#000] sm:w-auto ${item.card}`}
-          style={{
-            animation: `role-pop-in 0.7s cubic-bezier(0.34, 1.5, 0.64, 1) ${0.55 + i * 0.15}s both`,
-          }}
+          className={`@container group aspect-[383/663] w-[56vw] shrink-0 snap-center rounded-[max(0.75rem,1.2cqw)] border-[1cqw] border-neutral-900 p-0 shadow-[1.2cqw_1.2cqw_0_0_#000] transition-shadow hover:shadow-[1.6cqw_1.6cqw_0_0_#000] sm:w-auto ${item.card}`}
         >
-          <div className="card-bend-inner absolute inset-0">
+          <div className="absolute inset-0">
             {/* garis pinggir dalam */}
             <span className="absolute inset-[2.6cqw] rounded-[1.4cqw] border-[0.5cqw] border-neutral-900/15" />
 
