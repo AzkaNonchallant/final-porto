@@ -441,7 +441,7 @@ export default function FeaturedSection({
             animation: `role-pop-in 0.7s cubic-bezier(0.34, 1.5, 0.64, 1) ${0.55 + i * 0.15}s both`,
           }}
         >
-          <div className="absolute inset-0">
+          <div className="card-bend-inner absolute inset-0">
             {/* garis pinggir dalam */}
             <span className="absolute inset-[2.6cqw] rounded-[1.4cqw] border-[0.5cqw] border-neutral-900/15" />
 
