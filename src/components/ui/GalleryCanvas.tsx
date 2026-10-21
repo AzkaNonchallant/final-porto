@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Maximize2, Minus, Plus, X } from "lucide-react";
+import { galleryImages } from "@/lib/gallery";
 
 type Tile = {
   src: string;
@@ -13,85 +14,45 @@ type Tile = {
   filter?: string;
 };
 
-const tiles: Tile[] = [
-  {
-    src: "/chinatsu.jpg",
-    alt: "Ilustrasi 1",
-    span: "col-span-2 row-span-2",
-    pos: "center",
-  },
-  {
-    src: "/oc.jpg",
-    alt: "Ilustrasi 2",
-    span: "col-span-2 row-span-1",
-    pos: "top",
-  },
-  {
-    src: "/texture.jpg",
-    alt: "Ilustrasi 3",
-    span: "col-span-1 row-span-1",
-    pos: "center",
-  },
-  {
-    src: "/vid.png",
-    alt: "Ilustrasi 4",
-    span: "col-span-2 row-span-2",
-    pos: "center",
-  },
-  {
-    src: "/azkayow.png",
-    alt: "Ilustrasi 5",
-    span: "col-span-2 row-span-1",
-    pos: "bottom",
-  },
-  {
-    src: "/chinatsu.jpg",
-    alt: "Ilustrasi 6",
-    span: "col-span-1 row-span-1",
-    pos: "left",
-    filter: "saturate-50",
-  },
-  {
-    src: "/oc.jpg",
-    alt: "Ilustrasi 7",
-    span: "col-span-2 row-span-2",
-    pos: "bottom",
-  },
-  {
-    src: "/texture.jpg",
-    alt: "Ilustrasi 8",
-    span: "col-span-1 row-span-1",
-    pos: "right",
-    filter: "hue-rotate-15",
-  },
-  {
-    src: "/vid.png",
-    alt: "Ilustrasi 9",
-    span: "col-span-2 row-span-1",
-    pos: "top",
-  },
-  {
-    src: "/azkayow.png",
-    alt: "Ilustrasi 10",
-    span: "col-span-2 row-span-2",
-    pos: "top",
-    filter: "contrast-110",
-  },
-  {
-    src: "/chinatsu.jpg",
-    alt: "Ilustrasi 11",
-    span: "col-span-1 row-span-1",
-    pos: "bottom",
-    filter: "grayscale",
-  },
-  {
-    src: "/oc.jpg",
-    alt: "Ilustrasi 12",
-    span: "col-span-2 row-span-1",
-    pos: "center",
-    filter: "brightness-110",
-  },
+const spans = [
+  "col-span-2 row-span-2",
+  "col-span-2 row-span-1",
+  "col-span-1 row-span-1",
+  "col-span-2 row-span-2",
+  "col-span-2 row-span-1",
+  "col-span-1 row-span-1",
+  "col-span-2 row-span-2",
+  "col-span-2 row-span-1",
+  "col-span-1 row-span-2",
+  "col-span-2 row-span-1",
+  "col-span-1 row-span-1",
+  "col-span-2 row-span-2",
+  "col-span-1 row-span-1",
 ];
+
+const filters: (string | undefined)[] = [
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "saturate-110",
+  undefined,
+  "contrast-105",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  "contrast-105",
+];
+
+const tiles: Tile[] = galleryImages.map((img, i) => ({
+  src: img.src,
+  alt: img.alt,
+  span: spans[i % spans.length],
+  pos: "center",
+  filter: filters[i],
+}));
 
 export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
   const viewport = useRef<HTMLDivElement>(null);
@@ -131,7 +92,7 @@ export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
             onClick={() =>
               setZoom((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))
             }
-            className="grid size-8 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-white"
+            className="grid size-8 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-neutral-200"
           >
             <Minus className="size-4" strokeWidth={3} />
           </button>
@@ -144,7 +105,7 @@ export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
             onClick={() =>
               setZoom((z) => Math.min(2, Number((z + 0.25).toFixed(2))))
             }
-            className="grid size-8 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-white"
+            className="grid size-8 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-neutral-200"
           >
             <Plus className="size-4" strokeWidth={3} />
           </button>
@@ -154,7 +115,7 @@ export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
           type="button"
           aria-label="Tutup galeri"
           onClick={onClose}
-          className="grid size-8 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-[#ff5f57]"
+          className="grid size-8 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-[#ff5f57]"
         >
           <X className="size-4" strokeWidth={3} />
         </button>
@@ -167,7 +128,7 @@ export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
           dragConstraints={viewport}
           dragElastic={0.12}
           dragMomentum
-          className="absolute left-0 top-0 grid w-[1600px] auto-rows-[180px] grid-cols-4 gap-4 p-6 will-change-transform sm:auto-rows-[220px] sm:grid-cols-6"
+          className="absolute left-0 top-0 grid w-[1600px] auto-rows-[180px] grid-cols-4 select-none touch-none gap-4 p-6 will-change-transform sm:auto-rows-[220px] sm:grid-cols-6"
           style={{ scale: zoom }}
         >
           {tiles.map((tile, i) => (
@@ -182,11 +143,13 @@ export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
                 src={tile.src}
                 alt={tile.alt}
                 fill
+                draggable={false}
+                unoptimized={tile.src.endsWith(".gif")}
                 sizes="(min-width: 640px) 30vw, 80vw"
                 style={{ objectPosition: tile.pos ?? "center" }}
-                className={`object-cover transition-transform duration-300 group-hover:scale-105 ${tile.filter ?? ""}`}
+                className={`pointer-events-none object-cover transition-transform duration-300 group-hover:scale-105 ${tile.filter ?? ""}`}
               />
-              <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 opacity-0 transition group-hover:opacity-100">
+              <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 opacity-0 transition group-hover:opacity-100">
                 <Maximize2 className="size-3.5" strokeWidth={3} />
               </span>
             </motion.button>
@@ -215,6 +178,7 @@ export default function GalleryCanvas({ onClose }: { onClose: () => void }) {
                 src={lightbox.src}
                 alt={lightbox.alt}
                 fill
+                unoptimized={lightbox.src.endsWith(".gif")}
                 sizes="90vw"
                 className="object-contain"
               />

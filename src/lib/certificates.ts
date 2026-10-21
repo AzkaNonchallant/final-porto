@@ -9,7 +9,7 @@ export type Certificate = {
 
 export const certificates: Certificate[] = [
   {
-    src: "/sertifikat-olimpiade.jpg",
+    src: "/sertif/sertifikat-olimpiade.jpg",
     title: "Juara 1 — Informatika",
     issuer: "Olimpiade Siswa Merdeka 2026 · LKP Astikom",
     year: "2026",
@@ -17,7 +17,7 @@ export const certificates: Certificate[] = [
     accent: "#b3122b",
   },
   {
-    src: "/sertifikat-lks-otomotif.jpg",
+    src: "/sertif/sertifikat-lks-otomotif.jpg",
     title: "Juara 3 — Otomotif",
     issuer: "LKS SMK KCD Wilayah I Kabupaten Bogor",
     year: "2026",
@@ -25,7 +25,7 @@ export const certificates: Certificate[] = [
     accent: "#1f5fd0",
   },
   {
-    src: "/sertifikat-rpl-uiux.png",
+    src: "/sertif/sertifikat-rpl-uiux.png",
     title: "Workshop UI/UX Design",
     issuer: "RPL Industry Insight · Divisi RPL",
     year: "2026",
@@ -33,7 +33,7 @@ export const certificates: Certificate[] = [
     accent: "#c8102e",
   },
   {
-    src: "/sertifikat-tapresnesia-ai.jpg",
+    src: "/sertif/sertifikat-tapresnesia-ai.jpg",
     title: "Webinar AI: Coding AI",
     issuer: "PT Talenta Prestasi Indonesia",
     year: "2026",
@@ -41,7 +41,7 @@ export const certificates: Certificate[] = [
     accent: "#0e7490",
   },
   {
-    src: "/sertifikat-galeria-kontribusi.jpg",
+    src: "/sertif/sertifikat-galeria-kontribusi.jpg",
     title: "Public Speaking — Kontribusi",
     issuer: "Galeria Potensi Indonesia",
     year: "2026",
@@ -49,7 +49,7 @@ export const certificates: Certificate[] = [
     accent: "#1b3fa0",
   },
   {
-    src: "/sertifikat-galeria-potensi.jpg",
+    src: "/sertif/sertifikat-galeria-potensi.jpg",
     title: "Webinar Basic Public Speaking",
     issuer: "Galeria Potensi Indonesia",
     year: "2026",
@@ -57,7 +57,7 @@ export const certificates: Certificate[] = [
     accent: "#f5a623",
   },
   {
-    src: "/sertifikat-gdg-future-tech.jpg",
+    src: "/sertif/sertifikat-gdg-future-tech.jpg",
     title: "Explore The Future Tech",
     issuer: "Google Developer Group Bogor",
     year: "2025",
@@ -65,7 +65,7 @@ export const certificates: Certificate[] = [
     accent: "#4285f4",
   },
   {
-    src: "/sertifikat-gdg-roadshow.jpg",
+    src: "/sertif/sertifikat-gdg-roadshow.jpg",
     title: "Cloud Roadshows x Build with AI",
     issuer: "Google Developer Group Bogor",
     year: "2025",
@@ -73,7 +73,7 @@ export const certificates: Certificate[] = [
     accent: "#34a853",
   },
   {
-    src: "/sertifikat-pkl-mvf.jpg",
+    src: "/sertif/sertifikat-pkl-mvf.jpg",
     title: "Praktik Kerja Lapangan",
     issuer: "PT Milenia Variety FoodPedia",
     year: "2025",
@@ -81,7 +81,7 @@ export const certificates: Certificate[] = [
     accent: "#1c62b8",
   },
   {
-    src: "/sertifikat-idnetworks-ctf.jpg",
+    src: "/sertif/sertifikat-idnetworks-ctf.jpg",
     title: "Introduction to Capture the Flag",
     issuer: "ID-Networks · Indonesian IT Expert Factory",
     year: "2025",
@@ -89,7 +89,7 @@ export const certificates: Certificate[] = [
     accent: "#e11d2e",
   },
   {
-    src: "/sertifikat-revou-data.jpg",
+    src: "/sertif/sertifikat-revou-data.jpg",
     title: "Intro to Data Analytics",
     issuer: "RevoU · PT Revolusi Cita Edukasi",
     year: "2025",
@@ -97,7 +97,7 @@ export const certificates: Certificate[] = [
     accent: "#f26522",
   },
   {
-    src: "/sertifikat-devaccto.jpg",
+    src: "/sertif/sertifikat-devaccto.jpg",
     title: "Sertifikat Penghargaan",
     issuer: "DevAccto · Rekayasa Perangkat Lunak",
     year: "2026",

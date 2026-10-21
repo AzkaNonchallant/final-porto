@@ -19,12 +19,22 @@ export type LanguageStat = {
   repos: number;
 };
 
+export type CommitDay = {
+  date: string; // YYYY-MM-DD
+  count: number;
+  future: boolean; // hari yang belum datang (kolom terakhir,abu-abu)
+};
+
 export type CommitActivity = {
-  total: number;
-  days: { date: string; count: number }[];
+  total: number; // commit 365 hari terakhir
+  allTime: number; // total commit publik
+  weeks: CommitDay[][]; // kolom minggu (index 0 = Minggu), 7 hari per kolom
   topRepos: { repo: string; count: number }[];
   latest: { message: string; date: string; url: string } | null;
 };
+
+const YEAR_DAYS = 364; // 52 minggu + hari ini = 365 hari
+const SEARCH_MAX_PAGES = 10; // batas 1000 hasil dari GitHub Commit Search
 
 function githubHeaders(): HeadersInit {
   const token = process.env.GITHUB_TOKEN;
@@ -154,84 +164,156 @@ export async function getLanguageStats(repos: Repo[]): Promise<LanguageStat[]> {
     .sort((a, b) => b.bytes - a.bytes);
 }
 
+type SearchCommit = {
+  html_url: string;
+  repository: { full_name: string };
+  commit: { message: string; author: { date: string } | null };
+};
+
+type SearchResponse = {
+  total_count: number;
+  items: SearchCommit[];
+};
+
+function toDayKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setUTCDate(next.getUTCDate() + days);
+  return next;
+}
+
 /**
- * Aktivitas commit publik dari GitHub Commit Search:
- * total commit, grafik 14 hari terakhir, repo paling aktif, dan commit terbaru.
+ * Tanggal "hari ini" diambil dari header Date balasan GitHub, bukan Date.now(),
+ * supaya halaman tetap bisa di-prerender tanpa dynamic API Next.js.
+ */
+function readToday(res: Response, fallback?: string) {
+  const header = res.headers.get("date");
+  const parsed = header ? new Date(header) : null;
+  if (parsed && !Number.isNaN(parsed.getTime())) return toDayKey(parsed);
+  return fallback;
+}
+
+/**
+ * Susun grid 53 minggu x 7 hari (heatmap ala GitHub). Kolom pertama dimulai
+ * dari Minggu sebelum 365 hari lalu, kolom terakhir berisi minggu ini. Hari di
+ * masa depan ditandai future supaya client bisa render transparan.
+ */
+function buildWeeks(perDay: Map<string, number>, today: string) {
+  const end = new Date(`${today}T00:00:00.000Z`);
+  const start = addDays(end, -YEAR_DAYS);
+  start.setUTCDate(start.getUTCDate() - start.getUTCDay());
+
+  const weeks: CommitDay[][] = [];
+
+  for (let cursor = start; cursor <= end; cursor = addDays(cursor, 7)) {
+    const week: CommitDay[] = [];
+
+    for (let i = 0; i < 7; i++) {
+      const day = addDays(cursor, i);
+      const date = toDayKey(day);
+      const future = day > end;
+      week.push({ date, count: future ? 0 : (perDay.get(date) ?? 0), future });
+    }
+
+    weeks.push(week);
+  }
+
+  return weeks;
+}
+
+/**
+ * Aktivitas commit publik dari GitHub Commit Search: kalender kontribusi 365
+ * hari (ala GitHub), total commit, repo paling aktif, dan commit terbaru.
  */
 export async function getCommitActivity(): Promise<CommitActivity> {
   const empty: CommitActivity = {
     total: 0,
-    days: [],
+    allTime: 0,
+    weeks: [],
     topRepos: [],
     latest: null,
   };
 
   try {
-    const res = await fetch(
-      `${API}/search/commits?q=author:${GITHUB_USER}&sort=author-date&order=desc&per_page=100`,
-      {
-        headers: githubHeaders(),
-        next: { revalidate: REVALIDATE_SECONDS },
-      },
-    );
+    const search = (query: string, page: number) =>
+      fetch(
+        `${API}/search/commits?q=${encodeURIComponent(query)}&sort=author-date&order=desc&per_page=100&page=${page}`,
+        {
+          headers: githubHeaders(),
+          next: { revalidate: REVALIDATE_SECONDS },
+        },
+      );
 
-    if (!res.ok) {
+    // request pertama: total sepanjang masa + tanggal server.
+    const firstRes = await search(`author:${GITHUB_USER}`, 1);
+
+    if (!firstRes.ok) {
       console.error(
-        `GitHub commit search error: ${res.status} ${res.statusText}`,
+        `GitHub commit search error: ${firstRes.status} ${firstRes.statusText}`,
       );
       return empty;
     }
 
-    const data: {
-      total_count: number;
-      items: {
-        html_url: string;
-        repository: { full_name: string };
-        commit: { message: string; author: { date: string } | null };
-      }[];
-    } = await res.json();
+    const firstPage: SearchResponse = await firstRes.json();
+    const firstItem = firstPage.items?.[0];
+    const today = readToday(firstRes, firstItem?.commit.author?.date?.slice(0, 10));
 
+    if (!today) return { ...empty, allTime: firstPage.total_count };
+
+    // request pertama (tanpa filter tanggal): total sepanjang masa, commit
+    // terbaru, dan tanggal server untuk batas kalender.
     const perDay = new Map<string, number>();
     const perRepo = new Map<string, number>();
 
-    for (const item of data.items) {
-      const iso = item.commit.author?.date;
-      if (!iso) continue;
-      const day = iso.slice(0, 10);
-      perDay.set(day, (perDay.get(day) ?? 0) + 1);
+    const collect = (commit: SearchCommit) => {
+      const iso = commit.commit.author?.date;
+      if (!iso) return;
 
-      const repo = item.repository.full_name.replace(`${GITHUB_USER}/`, "");
+      const date = iso.slice(0, 10);
+      perDay.set(date, (perDay.get(date) ?? 0) + 1);
+
+      const repo = commit.repository.full_name.replace(`${GITHUB_USER}/`, "");
       perRepo.set(repo, (perRepo.get(repo) ?? 0) + 1);
-    }
+    };
 
-    const first = data.items[0];
+    // lanjut dengan filter 1 tahun terakhir, paginasi sampai 1000 hasil.
+    const since = toDayKey(addDays(new Date(`${today}T00:00:00.000Z`), -365));
+    const query = `author:${GITHUB_USER} author-date:>=${since}`;
 
-    // 14 hari terakhir dihitung dari commit terbaru (deterministik, biar
-    // Next.js bisa prerender/static tanpa error "current time").
-    const days: { date: string; count: number }[] = [];
-    const anchor = first?.commit.author?.date;
-    if (anchor) {
-      const end = new Date(anchor);
-      for (let i = 13; i >= 0; i--) {
-        const d = new Date(end);
-        d.setDate(d.getDate() - i);
-        const key = d.toISOString().slice(0, 10);
-        days.push({ date: key, count: perDay.get(key) ?? 0 });
+    for (let page = 1; page <= SEARCH_MAX_PAGES; page++) {
+      const res = await search(query, page);
+      if (!res.ok) {
+        console.error(
+          `GitHub commit search error: ${res.status} ${res.statusText}`,
+        );
+        break;
       }
+
+      const data: SearchResponse = await res.json();
+      for (const item of data.items) collect(item);
+
+      if (data.items.length < 100) break;
     }
+
+    let total = 0;
+    for (const count of perDay.values()) total += count;
 
     return {
-      total: data.total_count,
-      days,
+      total,
+      allTime: firstPage.total_count,
+      weeks: buildWeeks(perDay, today),
       topRepos: [...perRepo.entries()]
         .map(([repo, count]) => ({ repo, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5),
-      latest: first
+      latest: firstItem
         ? {
-            message: first.commit.message.split("\n")[0],
-            date: first.commit.author?.date ?? "",
-            url: first.html_url,
+            message: firstItem.commit.message.split("\n")[0],
+            date: firstItem.commit.author?.date ?? "",
+            url: firstItem.html_url,
           }
         : null,
     };

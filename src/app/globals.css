@@ -131,10 +131,61 @@ body {
   animation: card-bend 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+@keyframes deco-float {
+  0%,
+  100% {
+    transform: translateY(-6%) rotate(-4deg) scale(1);
+  }
+  50% {
+    transform: translateY(6%) rotate(4deg) scale(1.06);
+  }
+}
+
+@keyframes deco-pulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(-2deg);
+  }
+  35% {
+    transform: scale(1.16) rotate(3deg);
+  }
+  55% {
+    transform: scale(1.02) rotate(-1deg);
+  }
+  70% {
+    transform: scale(1.12) rotate(2deg);
+  }
+}
+
+@keyframes deco-wiggle {
+  0%,
+  100% {
+    transform: rotate(-10deg) translateY(-4%);
+  }
+  50% {
+    transform: rotate(10deg) translateY(4%);
+  }
+}
+
+.deco-float {
+  animation: deco-float 3.6s ease-in-out infinite;
+}
+
+.deco-pulse {
+  animation: deco-pulse 2.2s ease-in-out infinite;
+}
+
+.deco-wiggle {
+  animation: deco-wiggle 3.2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .letter-idle,
   .playful-idle,
   .role-idle,
+  .deco-float,
+  .deco-pulse,
+  .deco-wiggle,
   .card-bend:hover {
     animation: none !important;
   }

@@ -68,7 +68,7 @@ function Lightbox({
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Buka sertifikat ukuran penuh"
-            className="grid size-8 shrink-0 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-white"
+            className="grid size-8 shrink-0 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-neutral-200"
           >
             <ExternalLink className="size-4" strokeWidth={3} />
           </a>
@@ -77,7 +77,7 @@ function Lightbox({
             type="button"
             aria-label="Tutup sertifikat"
             onClick={onClose}
-            className="grid size-8 shrink-0 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-[#ff5f57]"
+            className="grid size-8 shrink-0 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-[#ff5f57]"
           >
             <X className="size-4" strokeWidth={3} />
           </button>

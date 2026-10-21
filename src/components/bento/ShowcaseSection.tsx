@@ -1,35 +1,26 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { MoveRight } from "lucide-react";
 import ImageCarousel from "@/components/ui/ImageCarousel";
 import GalleryCanvas from "@/components/ui/GalleryCanvas";
+import { galleryImages } from "@/lib/gallery";
 
-const slides = ["/chinatsu.jpg", "/oc.jpg", "/texture.jpg"];
+const slides = galleryImages.map((img) => img.src);
 
 export default function ShowcaseSection() {
   const [gallery, setGallery] = useState(false);
 
   return (
-    <section className="grid items-center gap-10 md:grid-cols-[1fr_0.9fr] md:gap-16">
+    <section className="grid items-start gap-4 md:items-center md:grid-cols-[1fr_0.9fr] md:gap-16">
       {/* Kiri: logo + tombol */}
-      <div className="order-2 flex flex-col items-start gap-6 md:order-1">
-        <div className="flex flex-col gap-3">
-          <span className="font-mono text-xs font-medium uppercase tracking-[0.25em] text-neutral-400">
-            Portfolio
-          </span>
-          <Image
-            src="/test.svg"
-            alt="Azka"
-            width={260}
-            height={120}
-            className="h-auto w-[240px] max-w-full"
-          />
-        </div>
+      <div className="order-2 flex flex-col items-start gap-3 md:order-1 md:gap-4">
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-neutral-400 md:text-xs">
+          Portfolio
+        </span>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3 md:gap-4">
           <button
             type="button"
             onClick={() => setGallery(true)}
@@ -45,7 +36,7 @@ export default function ShowcaseSection() {
       </div>
 
       {/* Kanan: bar vertikal + gambar kotak */}
-      <div className="order-1 flex items-stretch gap-3 md:order-2">
+      <div className="order-1 flex items-stretch gap-2 md:order-2 md:gap-3">
         <div className="flex w-3 shrink-0 flex-col gap-1.5">
           {[0, 1, 2, 3].map((i) => (
             <span

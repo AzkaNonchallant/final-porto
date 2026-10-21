@@ -78,7 +78,7 @@ export default function DraggableWindow({
               type="button"
               aria-label="Perkecil"
               onClick={onMinimize}
-              className="grid size-7 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-white"
+              className="grid size-7 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-neutral-200"
             >
               <Minus className="size-4" strokeWidth={3} />
             </button>
@@ -86,7 +86,7 @@ export default function DraggableWindow({
               type="button"
               aria-label="Tutup"
               onClick={onClose}
-              className="grid size-7 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-[#ff5f57]"
+              className="grid size-7 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-[#ff5f57]"
             >
               <X className="size-4" strokeWidth={3} />
             </button>
@@ -127,7 +127,7 @@ export function MinimizedWindow({
         <button
           type="button"
           onClick={onRestore}
-          className="rounded-md border-2 border-neutral-900 bg-white/80 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-neutral-900 transition hover:bg-white"
+          className="rounded-md border-2 border-neutral-900 bg-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-neutral-900 transition hover:bg-neutral-200"
         >
           Restore
         </button>
@@ -135,7 +135,7 @@ export function MinimizedWindow({
           type="button"
           aria-label="Tutup"
           onClick={onClose}
-          className="grid size-6 place-items-center rounded-md border-2 border-neutral-900 bg-white/80 transition hover:bg-[#ff5f57]"
+          className="grid size-6 place-items-center rounded-md border-2 border-neutral-900 bg-white text-neutral-900 transition hover:bg-[#ff5f57]"
         >
           <X className="size-3.5" strokeWidth={3} />
         </button>

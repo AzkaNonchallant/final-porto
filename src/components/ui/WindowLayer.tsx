@@ -18,7 +18,6 @@ type WindowLayerProps = {
   onMinimize: (id: string) => void;
   onRestore: (id: string) => void;
   onClose: (id: string) => void;
-  onCloseAll: () => void;
 };
 
 export default function WindowLayer({
@@ -28,7 +27,6 @@ export default function WindowLayer({
   onMinimize,
   onRestore,
   onClose,
-  onCloseAll,
 }: WindowLayerProps) {
   if (windows.length === 0) return null;
 
@@ -37,21 +35,13 @@ export default function WindowLayer({
 
   return (
     <>
-      {/* overlay tunggal di bawah semua window */}
-      <button
-        type="button"
-        aria-label="Tutup semua window"
-        onClick={onCloseAll}
-        className="fixed inset-0 z-40 cursor-default bg-neutral-900/60 backdrop-blur-[2px]"
-      />
-
       <AnimatePresence>
         {visible.map((w) => (
           <DraggableWindow
             key={w.id}
             title={w.title}
             zIndex={50 + (zOrder[w.id] ?? 0)}
-            offset={{ x: (indexOf(w.id) % 3) * 28, y: (indexOf(w.id) % 3) * 24 }}
+            offset={{ x: (indexOf(w.id) % 3) * 48, y: (indexOf(w.id) % 3) * 40 }}
             onActivate={() => onFocus(w.id)}
             onClose={() => onClose(w.id)}
             onMinimize={() => onMinimize(w.id)}
