@@ -170,7 +170,7 @@ export default function HeroSection() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Learn more about me"
-            className="flex h-[max(2.1rem,3.4cqw)] w-[max(3rem,10.5cqw)] shrink-0 items-center justify-center rounded-[max(0.4rem,0.7cqw)] border-2 border-neutral-900 bg-white text-neutral-900 shadow-[0.2cqw_0.2cqw_0_0_rgba(0,0,0,0.4)] transition hover:scale-105"
+            className="flex h-[max(1.8rem,2.8cqw)] w-[max(2.5rem,8cqw)] shrink-0 items-center justify-center rounded-[max(0.35rem,0.6cqw)] border-2 border-neutral-900 bg-white text-neutral-900 shadow-[0.2cqw_0.2cqw_0_0_rgba(0,0,0,0.4)] transition hover:scale-105"
           >
             <MoveRight
               className="size-[max(1.2rem,2.5cqw)] text-neutral-900"
@@ -185,9 +185,9 @@ export default function HeroSection() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
-              className="grid size-[max(1.9rem,2.7cqw)] shrink-0 place-items-center rounded-[max(0.3rem,0.6cqw)] border-2 border-neutral-900 bg-white text-purple-600 shadow-[0.2cqw_0.2cqw_0_0_rgba(0,0,0,0.4)] transition hover:-translate-y-1"
+              className="grid size-[max(1.7rem,2.3cqw)] shrink-0 place-items-center rounded-[max(0.3rem,0.5cqw)] border-2 border-neutral-900 bg-white text-purple-600 shadow-[0.2cqw_0.2cqw_0_0_rgba(0,0,0,0.4)] transition hover:-translate-y-1"
             >
-              <Icon className="size-[max(1rem,1.5cqw)]" />
+              <Icon className="size-[max(0.9rem,1.3cqw)]" />
             </a>
           ))}
         </div>
